@@ -127,14 +127,15 @@ const adminAndMemberAndStaffSharedRoutes = (userLevel: string): RouteDefinition[
 const platformOwnerAndSuperAdminSharedRoutes = (userLevel: string): RouteDefinition[] => [
   createRoute(ADMIN_ROUTES.TICKETS, TicketsPage, userLevel, ["loading", "tickets"]),
   createRoute(ADMIN_ROUTES.TICKET_DETAIL, TicketDetailPage, userLevel, ["loading", "ticket", "detail"]),
-  createRoute(ADMIN_ROUTES.SCHEDULES, SchedulesPage, userLevel, ["loading", "schedules"]),
 ];
 
 const platformOwnerAndSuperAdminAndAdminSharedRoutes = (userLevel: string): RouteDefinition[] => [
+
 ];
 
 const platformOwnerAndAdminSharedRoutes = (userLevel: string): RouteDefinition[] => [
   createRoute(ADMIN_ROUTES.ACTIVITY_LOGS, ActivityLogsPage, userLevel, ["loading", "activity", "logs"]),
+  createRoute(ADMIN_ROUTES.SCHEDULES, SchedulesPage, userLevel, ["loading", "schedules"]),
 
   createRoute(ADMIN_ROUTES.CMS.EMAIL_TEMPLATES, EmailTemplatesPage, userLevel, ["loading", "email", "templates"]),
   createRoute(ADMIN_ROUTES.CMS.EMAIL_TEMPLATE_CREATE, CreateEmailTemplatePage, userLevel, ["loading", "email", "template", "create"]),

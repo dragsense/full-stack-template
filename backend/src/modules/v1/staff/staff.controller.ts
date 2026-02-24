@@ -44,6 +44,7 @@ export class StaffController {
   @ApiOperation({ summary: 'Get all staff members with pagination and filters' })
   @ApiResponse({ status: 200, type: StaffPaginatedDto })
   @Get()
+  @MinUserLevel(EUserLevels.MEMBER)
   findAll(@Query() query: StaffListDto) {
     return this.staffService.get(query, StaffListDto);
   }
@@ -55,7 +56,7 @@ export class StaffController {
     type: StaffDto,
   })
   @Get('me')
-  @Resource(EResource.STAFF)
+  @MinUserLevel(EUserLevels.STAFF)
   getCurrentUserStaff(
     @Query() query: SingleQueryDto,
     @AuthUser() currentUser: User,

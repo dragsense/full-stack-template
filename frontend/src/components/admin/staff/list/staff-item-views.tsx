@@ -38,39 +38,54 @@ const StaffActions = ({
   const componentId = useId();
   const [, startTransition] = useTransition();
 
-  const handleViewClick = () => {
+  const handleViewClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (handleView) {
       startTransition(() => handleView(staff.id));
     }
   };
 
-  const handleUpdateProfileClick = () => {
+  const handleUpdateProfileClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (handleUpdateProfile) {
-      startTransition(() => handleUpdateProfile(staff.id));
+      // Profile API expects user id, not staff record id
+      const userId = (staff as { user?: { id?: string } }).user?.id ?? staff.id;
+      startTransition(() => handleUpdateProfile(userId));
     }
   };
 
-  const handleEditClick = () => {
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (handleEdit) {
       startTransition(() => handleEdit(staff.id));
     }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (handleDelete) {
       startTransition(() => handleDelete(staff.id));
     }
   };
 
+  const handleTriggerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0" data-component-id={componentId}>
+        <Button
+          variant="ghost"
+          className="h-8 w-8 p-0"
+          data-component-id={componentId}
+          onClick={handleTriggerClick}
+        >
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {handleView && (
