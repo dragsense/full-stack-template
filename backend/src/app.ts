@@ -9,11 +9,11 @@ import { LoggerService } from './common/logger/logger.service';
 
 // Bootstrap components
 import { setupCors } from './common/bootstrap/cors.setup';
-import { setupSecurity } from './common/bootstrap/security.middleware';
+import { setupSecurity } from './common/bootstrap/security.setup';
 import { setupApiDocumentation } from './common/bootstrap/api-documentation.setup';
 import { setupInterceptors } from './common/bootstrap/interceptors.setup';
 import { setupBullBoard } from './common/bootstrap/bull-board.setup';
-import { setupRequestContext } from './common/bootstrap/request-context.setup';
+import { setupMiddleware } from './common/bootstrap/middleware.setup';
 
 export async function app() {
   const app = await NestFactory.create(AppModule, {
@@ -29,10 +29,10 @@ export async function app() {
 
   // Setup application components
   setupCors(app, configService);
-  setupRequestContext(app);
   setupSecurity(app, configService);
-  setupApiDocumentation(app, configService, loggerService);
+  setupMiddleware(app);
   setupInterceptors(app, loggerService);
+  setupApiDocumentation(app, configService, loggerService);
   setupBullBoard(app, loggerService, configService);
 
   // Socket.IO adapter (Redis) per Nest WebSockets Adapter docs

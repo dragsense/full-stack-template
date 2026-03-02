@@ -66,6 +66,7 @@ export function billingItemViews({
 
   const { user } = useAuthUser();
 
+
   // Table columns
   const columns: ColumnDef<IBilling>[] = [
     {

@@ -1,12 +1,10 @@
-import { Injectable, NestMiddleware, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable, NestMiddleware, BadRequestException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Business } from '@/modules/v1/business/entities/business.entity';
 import { RequestContext } from '../context/request-context';
+import { LoggerService } from '@/common/logger/logger.service';
 
 /** Subdomains reserved for env (staging, testing). Stripped so tenant is resolved from business subdomain only. */
-const RESERVED_SUBDOMAINS = ['staging', 'testing', 'dev'];
+const RESERVED_SUBDOMAINS = ['staging', 'testing', 'dev', 'inbox', 'server', 'impersonate'];
 
 /**
  * Middleware to extract subdomain from request and set tenant context
@@ -14,12 +12,7 @@ const RESERVED_SUBDOMAINS = ['staging', 'testing', 'dev'];
  */
 @Injectable()
 export class SubdomainTenantMiddleware implements NestMiddleware {
-  private readonly logger = new Logger(SubdomainTenantMiddleware.name);
-
-  constructor(
-    @InjectRepository(Business)
-    private readonly businessRepository: Repository<Business>,
-  ) {}
+  private readonly logger = new LoggerService(SubdomainTenantMiddleware.name);
 
   async use(req: Request, res: Response, next: NextFunction) {
     try {
@@ -37,37 +30,16 @@ export class SubdomainTenantMiddleware implements NestMiddleware {
       // Extract subdomain from normalized hostname
       const subdomain = this.extractSubdomain(hostname);
 
-
       if (!subdomain) {
         // No subdomain, continue with main domain (no tenant context)
         return next();
       }
 
-      // Look up business by subdomain
-      const business = await this.businessRepository.findOne({
-        where: { subdomain: subdomain.toLowerCase() },
-        select: ['id', 'tenantId', 'subdomain'],
-      });
-
-
-      if (!business || !business.tenantId) {
-        // Business not found or no tenantId, continue without tenant context
-        this.logger.warn(`Business not found for subdomain: ${subdomain}`);
-        throw new BadRequestException('Business not found');
-      }
-
-      // Set tenant context in request object for easy access
-      (req as any).tenantId = business.tenantId;
-      (req as any).businessId = business.id;
       (req as any).subdomain = subdomain;
-
-      // Set tenant context in RequestContext for async operations
-      RequestContext.set('tenantId', business.tenantId);
-      RequestContext.set('businessId', business.id);
       RequestContext.set('subdomain', subdomain);
 
       this.logger.debug(
-        `Subdomain tenant context set: subdomain=${subdomain}, tenantId=${business.tenantId}`,
+        `Subdomain tenant context set: subdomain=${subdomain}`,
       );
 
       next();

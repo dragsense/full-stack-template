@@ -26,7 +26,7 @@ import { EBillingType } from '@shared/enums/billing.enum';
 import { MemberMembershipBilling } from '../entities/member-membership-billing.entity';
 import { EntityRouterService } from '@/common/database/entity-router.service';
 import { User } from '@/common/base-user/entities/user.entity';
-import { RequestContext } from '@/common/context/request-context';
+import { RequestContext } from '@/context/request-context';
 import { MembershipNotificationService } from './membership-notification.service';
 
 @Injectable()

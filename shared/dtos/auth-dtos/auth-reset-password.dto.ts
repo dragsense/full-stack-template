@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MinLength } from "class-validator";
+import { IsString, IsNotEmpty, MinLength, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { ResetPasswordDto } from "../user-dtos/reset-password.dto";
 import { OmitType } from "../../lib/dto-type-adapter";
@@ -25,4 +25,9 @@ export class ResetPasswordWithTokenDto {
   @IsString()
   @IsNotEmpty({ message: "Token cannot be empty" })
   token: string;
+
+  @ApiProperty({ example: "tenantId", description: "Tenant ID" })
+  @IsString()
+  @IsOptional()
+  tenantId: string;
 }

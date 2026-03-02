@@ -27,7 +27,6 @@ export default defineConfig({
     allowedHosts: [
       "localhost",
       "app.local",
-      "staging.vivast.io",
     ],
     
   },

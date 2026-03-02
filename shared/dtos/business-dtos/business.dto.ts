@@ -35,8 +35,8 @@ export class CreateBusinessDto {
     })
     @IsNotEmpty({ message: "Subdomain is required" })
     @IsString({ message: "Subdomain must be a valid text" })
-    @IsNotIn(["dev", "staging", "testing"], {
-        message: "Subdomain cannot be a reserved name (dev, staging, testing).",
+    @IsNotIn(["dev", "staging", "testing", "impersonate", "server", "inbox"], {
+        message: "Subdomain cannot be a reserved name (dev, staging, testing, impersonate, server, inbox).",
     })
     @Matches(/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/, {
         message: "Subdomain can only contain lowercase letters, numbers, and hyphens. It cannot start or end with a hyphen, and cannot contain dots or special characters.",
@@ -70,8 +70,8 @@ export class CreateBusinessWithUserDto {
     })
     @IsNotEmpty({ message: "Subdomain is required" })
     @IsString({ message: "Subdomain must be a valid text" })
-    @IsNotIn(["dev", "staging", "testing"], {
-        message: "Subdomain cannot be a reserved name (dev, staging, testing).",
+    @IsNotIn(["dev", "staging", "testing", "inbox", "server"], {
+        message: "Subdomain cannot be a reserved name (dev, staging, testing, inbox, server).",
     })
     @Matches(/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/, {
         message: "Subdomain can only contain lowercase letters, numbers, and hyphens. It cannot start or end with a hyphen, and cannot contain dots or special characters.",
@@ -87,7 +87,7 @@ export class CreateBusinessWithUserDto {
     user: CreateUserDto;
 }
 
-export class UpdateBusinessDto extends PartialType(CreateBusinessDto) {}
+export class UpdateBusinessDto extends PartialType(CreateBusinessDto) { }
 
 export class UpdateBusinessWithUserDto extends PartialType(
     OmitType(CreateBusinessWithUserDto, ["user"])

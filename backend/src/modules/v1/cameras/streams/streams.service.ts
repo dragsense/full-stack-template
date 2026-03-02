@@ -4,7 +4,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { CamerasService } from '../cameras.service';
 import { getStreamKey } from './stream-utils';
-import { RequestContext } from '@/common/context/request-context';
+import { RequestContext } from '@/context/request-context';
 import { FfmpegProcessor } from './ffmpeg.processor';
 
 

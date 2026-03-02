@@ -23,12 +23,12 @@ import { Equals } from "../../../decorators/crud.dto.decorators";
 export class CreateSubscriptionDto {
   @ApiProperty({
     example: "Premium Plan",
-    description: "Subscription name",
+    description: "Subscription title",
   })
   @IsString()
   @IsNotEmpty()
   @FieldType("text", true)
-  name: string;
+  title: string;
 
   @ApiPropertyOptional({
     example: "Access to all premium features.",

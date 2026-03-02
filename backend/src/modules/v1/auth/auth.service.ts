@@ -27,6 +27,7 @@ import { MembersService } from '../members/members.service';
 import { SignupUserLevel } from '@shared/enums/user.enum';
 import { User } from '@/common/base-user/entities/user.entity';
 import { PasswordResetEmailService } from './services/password-reset-email.service';
+import { BusinessService } from '@/modules/v1/business/business.service';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +41,7 @@ export class AuthService {
     private readonly activityLogsService: ActivityLogsService,
     private readonly rewardsService: RewardsService,
     private readonly passwordResetEmailService: PasswordResetEmailService,
+    private readonly businessService: BusinessService,
   ) { }
 
   async signup(signupDto: SignupDto, tenantId: string | null = null): Promise<{ message: string, user: User }> {
@@ -215,6 +217,7 @@ export class AuthService {
         },
       });
 
+
       return { token, user: userWithoutPassword };
     } catch (error) {
       // Re-throw the error if it's already an UnauthorizedException
@@ -244,6 +247,7 @@ export class AuthService {
   async sendResetLink(
     email: string,
     tenantId: string | null = null,
+    appUrlFromRequest: string | null = null,
   ): Promise<{ message: string }> {
     try {
       const user = await this.userService.getUserByEmail(email);
@@ -258,10 +262,17 @@ export class AuthService {
           expiresIn: '15m',
         });
 
-        // Use the origin from request if provided, otherwise fallback to config
-        const appUrl = appConfig.appUrl;
-        const resetPasswordPath = appConfig.passwordResetPath;
-        const resetUrl = `${appUrl}/${resetPasswordPath}?token=${token}`;
+        const baseAppUrl =
+          (appUrlFromRequest as string) || (appConfig.appUrl as string);
+
+          const port = process.env.NODE_ENV === 'development' ? '5173' : '';
+
+        const appUrl = `${baseAppUrl.replace(/\/+$/, '')}${port ? `:${port}` : ''}`;
+        const resetPasswordPath = String(appConfig.passwordResetPath).replace(
+          /^\/+/,
+          '',
+        );
+        const resetUrl = `${appUrl}/${resetPasswordPath}?token=${token}&tenantId=${tenantId}`;
 
         try {
           await this.passwordResetEmailService.sendPasswordResetLink(

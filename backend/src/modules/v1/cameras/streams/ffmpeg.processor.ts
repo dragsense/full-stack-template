@@ -8,7 +8,7 @@ import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import { CamerasService } from '../cameras.service';
 import { getStreamKey } from './stream-utils';
 import { ECameraProtocol } from '@shared/enums';
-import { RequestContext } from '@/common/context/request-context';
+import { RequestContext } from '@/context/request-context';
 
 @Processor('ffmpeg-stream')
 @Injectable()

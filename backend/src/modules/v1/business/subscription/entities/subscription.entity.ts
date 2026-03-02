@@ -13,7 +13,7 @@ import {
 export class Subscription extends GeneralBaseEntity {
   @ApiProperty({ example: 'Premium Plan', description: 'Subscription name' })
   @Column({ type: 'varchar', length: 255 })
-  name: string;
+  title: string;
 
   @ApiPropertyOptional({
     example: 'Access to all premium features.',

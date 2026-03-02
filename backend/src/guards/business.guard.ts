@@ -10,11 +10,11 @@ import { IS_PUBLIC_KEY } from '@/decorators/access.decorator';
 import { SKIP_BUSINESS_CHECK_KEY } from '@/decorators/skip-business-check.decorator';
 import { BusinessSubscriptionService } from '@/modules/v1/business/services/business-subscription.service';
 import { ESubscriptionStatus } from '@shared/enums/business/subscription.enum';
-import { RequestContext } from '@/common/context/request-context';
+import { RequestContext } from '@/context/request-context';
 import { EUserLevels } from '@shared/enums/user.enum';
 
 @Injectable()
-export class AdminBusinessGuard implements CanActivate {
+export class BusinessGuard implements CanActivate {
     constructor(
         private readonly businessSubscriptionService: BusinessSubscriptionService,
         private readonly reflector: Reflector,

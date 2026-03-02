@@ -22,7 +22,7 @@ import { MembersService } from '../members/members.service';
 import { MemberMembershipService } from '../memberships/services/member-membership.service';
 
 import { FileUploadService } from '@/common/file-upload/file-upload.service';
-import { RequestContext } from '@/common/context/request-context';
+import { RequestContext } from '@/context/request-context';
 import { ConfigService } from '@nestjs/config';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';

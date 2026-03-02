@@ -18,6 +18,9 @@ import { Subscription } from '../subscription/entities/subscription.entity';
 import { DatabaseManager } from '@/common/database/database-manager.service';
 import { BaseUsersService } from '@/common/base-user/base-users.service';
 import { EUserLevels } from '@shared/enums/user.enum';
+import { ConfigService } from '@nestjs/config';
+import { APP_MODE } from '@/config/app.config';
+import { DatabaseMode } from '@/config/database.config';
 
 @Injectable()
 export class BusinessSubscriptionService extends CrudService<BusinessSubscription> {
@@ -32,6 +35,7 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
     @Inject(forwardRef(() => BusinessService))
     private readonly businessService: BusinessService,
     private readonly databaseManager: DatabaseManager,
+    private readonly configService: ConfigService,
     moduleRef: ModuleRef,
   ) {
     super(businessSubscriptionRepo, moduleRef);
@@ -161,32 +165,38 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
       throw new NotFoundException('Business not found');
     }
 
-    // Create tenant database if tenantId exists
+    // Create tenant database if tenantId exists _
     if (business.tenantId) {
-      await this.databaseManager.createTenantResources(business.tenantId).then(async () => {
-        this.customLogger.log(`Tenant database created for business ${business.id}`);
 
-        const user = await this.baseUsersService.getUserByIdWithPassword(business.user.id);
+      const user = await this.baseUsersService.getUserByIdWithPassword(business.user.id);
 
-        const userRepository = this.databaseManager.getRepository(User, { tenantId: business.tenantId });
-        const newUser = userRepository.create({
-          firstName: user?.firstName || business.user.firstName,
-          lastName: user?.lastName || business.user.lastName,
-          email: user?.email || business.user.email,
-          password: user?.password,
-          isActive: true,
-          isVerified: true,
-          level: EUserLevels.ADMIN,
-          refUserId: user?.id || business.user.id || null,
+      const dbMode = this.configService.get<DatabaseMode>('database.mode');
+      if (dbMode === DatabaseMode.MULTI_DATABASE) {
+        await this.databaseManager.createTenantResources(business.tenantId).then(async () => {
+          this.customLogger.log(`Tenant database created for business ${business.id}`);
+          const userRepository = this.databaseManager.getRepository(User, { tenantId: business.tenantId ?? undefined });
+          await this.createUserForBusiness(business, userRepository, user || undefined);
+
+        }).catch((error: Error) => {
+          this.customLogger.error(
+            `Failed to create tenant database for business ${business.id}: ${error.message}`,
+            error.stack,
+          );
         });
-        await userRepository.save(newUser);
+      } else {
+        const userRepository = this.databaseManager.getRepository(User);
 
-      }).catch((error: Error) => {
-        this.customLogger.error(
-          `Failed to create tenant database for business ${business.id}: ${error.message}`,
-          error.stack,
-        );
-      });
+        const _tenantId = "_" + business.tenantId;
+
+
+        if (user) {
+          user.email = user.email + _tenantId;
+        }
+
+        business.user.email = business.user.email + _tenantId;
+
+        this.createUserForBusiness(business, userRepository, user || undefined)
+      }
     }
 
     // Deactivate all other subscriptions for this business
@@ -241,6 +251,21 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
       source,
       metadata,
     });
+  }
+
+
+  async createUserForBusiness(business: Business, repository: Repository<User>, user?: User): Promise<void> {
+    const newUser = repository.create({
+      firstName: user?.firstName || business.user.firstName,
+      lastName: user?.lastName || business.user.lastName,
+      email: user?.email || business.user.email,
+      password: user?.password,
+      isActive: true,
+      isVerified: true,
+      level: EUserLevels.ADMIN,
+      refUserId: user?.id || business.user.id || null,
+    });
+    await repository.save(newUser);
   }
 
   /**
@@ -379,7 +404,7 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
    */
   async getBusinessFeatures(businessId: string): Promise<ESubscriptionFeatures[]> {
     const businessSubscription = await this.getCurrentBusinessSubscription(businessId);
-    
+
     if (!businessSubscription || !businessSubscription.isActive) {
       return [];
     }
@@ -405,7 +430,7 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
     }
 
     const businessFeatures = await this.getBusinessFeatures(businessId);
-    
+
     // Check if business has ALL required modules
     return requiredModules.every(module => businessFeatures.includes(module));
   }
@@ -422,7 +447,7 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
     }
 
     const businessFeatures = await this.getBusinessFeatures(businessId);
-    
+
     return requiredModules.filter(module => !businessFeatures.includes(module));
   }
 }

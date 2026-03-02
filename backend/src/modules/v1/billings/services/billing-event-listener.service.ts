@@ -16,7 +16,7 @@ import { EBillingStatus } from '@shared/enums/billing.enum';
 import { BillingEmailService } from './billing-email.service';
 import { UsersService } from '@/modules/v1/users/users.service';
 import { BillingNotificationService } from './billing-notification.service';
-import { RequestContext } from '@/common/context/request-context';
+import { RequestContext } from '@/context/request-context';
 import { EScheduleFrequency, EScheduleStatus } from '@shared/enums';
 
 @Injectable()

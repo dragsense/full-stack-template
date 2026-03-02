@@ -5,7 +5,7 @@ import { Queue } from 'bull';
 import { User } from '@/common/base-user/entities/user.entity';
 import { EventPayload } from '@/common/helper/services/event.service';
 import { UserNotificationService } from './user-notification.service';
-import { RequestContext } from '@/common/context/request-context';
+import { RequestContext } from '@/context/request-context';
 
 @Injectable()
 export class UserEventListenerService {

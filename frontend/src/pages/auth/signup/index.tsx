@@ -45,6 +45,7 @@ export default function SignupPage() {
     password: "",
     confirmPassword: "",
     referralCode: referralCodeFromUrl,
+    business: undefined
   };
 
   return (

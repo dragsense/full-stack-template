@@ -9,7 +9,7 @@ import {
   Length,
   IsEmail,
   IsOptional,
-  IsIn,
+  IsUUID,
   IsNumber,
   ValidateIf,
   Min,
@@ -19,6 +19,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { FieldOptions, FieldType } from "../../decorators/field.decorator";
 import { SignupUserLevel } from "../../enums/user.enum";
 import { Type, Expose } from "class-transformer";
+import { BusinessDto } from "../business-dtos";
 
 @ValidatorConstraint({ name: "passwordMatch", async: false })
 class PasswordMatchConstraint implements ValidatorConstraintInterface {
@@ -55,13 +56,13 @@ export class SignupTrainerDto {
 export class SignupDto {
   @ApiProperty({ example: "John", description: "First name of the user" })
   @IsString()
-  @IsNotEmpty({message: "First Name is required" })
+  @IsNotEmpty({ message: "First Name is required" })
   @FieldType("text", true)
   firstName: string;
 
   @ApiProperty({ example: "Doe", description: "Last name of the user" })
   @IsString()
-  @IsNotEmpty({message: "Last Name is required" })
+  @IsNotEmpty({ message: "Last Name is required" })
   @FieldType("text", true)
   lastName: string;
 
@@ -100,6 +101,16 @@ export class SignupDto {
   @IsOptional()
   @FieldType("text", false)
   referralCode?: string;
+
+
+  @ApiProperty({ type: BusinessDto, description: "Business detail" })
+  @ValidateNested({ message: "Business details are required" })
+  @IsOptional()
+  @Expose()
+  @Type(() => BusinessDto)
+  @FieldType("nested", true, BusinessDto)
+  business?: BusinessDto;
+
 }
 
 export class SignupResponseDto {

@@ -89,7 +89,7 @@ export class ChatService {
           const restoredChatUser = await this.baseChatUserService.update(existingChatUser.id, {
             deletedAt: null,
             clearedAt: existingChatUser.deletedAt ? new Date(existingChatUser.deletedAt) : undefined,
-          } as any, undefined, true);
+          } as any, undefined, { includeDeleted: true });
         }
 
         const chat = await this.baseChatService.getSingle(existingChatId, {
@@ -207,7 +207,7 @@ export class ChatService {
           return query;
         },
       },
-      deleted
+      deleted ? { includeDeleted: true } : undefined
     );
 
   }
@@ -295,7 +295,7 @@ export class ChatService {
       await this.baseChatUserService.update(chatUserToRestore.id, {
         deletedAt: null,
         clearedAt: chatUserToRestore.deletedAt ? chatUserToRestore.deletedAt : undefined,
-      } as any, undefined, true);
+      } as any, undefined, { includeDeleted: true });
     }
 
     // Create new chat users
@@ -563,7 +563,7 @@ export class ChatService {
         unreadCount: (participant.unreadCount || 0) + 1,
         deletedAt: !chat.isGroup ? null : undefined,
         clearedAt: !chat.isGroup ? participant.deletedAt : undefined,
-      } as any, undefined, true);
+      } as any, undefined, { includeDeleted: true });
     }
 
 
@@ -842,7 +842,7 @@ export class ChatService {
       undefined,
       undefined,
       undefined,
-      deleted
+      deleted ? { includeDeleted: true } : undefined
     );
 
     if (!chatUser) {

@@ -1,5 +1,5 @@
 // Utils
-import { BaseService } from "./base.service";
+import { BaseService } from "./base.service.api";
 
 // Types
 import type { IListQueryParams } from "@shared/interfaces/api/param.interface";
