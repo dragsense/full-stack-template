@@ -80,7 +80,7 @@ export function SubscriptionForm({ storeKey, store }: ISubscriptionFormProps) {
   );
 
   const INITIAL_VALUES: TSubscriptionData = {
-    title: "",
+    name: "",
     description: "",
     status: ESubscriptionStatus.ACTIVE, // required enum
     sortOrder: 0, // optional
@@ -88,8 +88,8 @@ export function SubscriptionForm({ storeKey, store }: ISubscriptionFormProps) {
     price: 0, // required
     discountPercentage: 0, // optional
     frequency: [ESubscriptionFrequency.MONTHLY], // required enum
-    features: [], // required non-empty array (can start empty)
-    autoRenewal: false, // optional boolean
+    accessModules: [], // required non-empty array (can start empty)
+    autoRenewal: true, // optional boolean
     trialPeriod: 0, // optional
   };
 

@@ -76,7 +76,7 @@ export class SubscriptionsController {
     @Body() createDto: CreateSubscriptionDto,
     @AuthUser() currentUser: User,
   ) {
-    return this.subscriptionsService.createSubscription(createDto);
+    return this.subscriptionsService.create(createDto);
   }
 
   @ApiOperation({ summary: 'Update a subscription plan by ID' })
@@ -92,7 +92,7 @@ export class SubscriptionsController {
   @ApiResponse({ status: 404, description: 'Subscription not found' })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDto: UpdateSubscriptionDto) {
-    return this.subscriptionsService.updateSubscription(id, updateDto);
+    return this.subscriptionsService.update(id, updateDto);
   }
 
   @ApiOperation({ summary: 'Delete a subscription plan by ID' })

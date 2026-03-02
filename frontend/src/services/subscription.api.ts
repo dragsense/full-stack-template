@@ -1,5 +1,5 @@
 // Utils
-import { BaseService } from "./base.service.api";
+import { BaseService } from "./base.service";
 
 // Types
 import type { IListQueryParams } from "@shared/interfaces/api/param.interface";
@@ -20,13 +20,10 @@ const subscriptionService = new BaseService<
 export const fetchSubscriptions = (params: IListQueryParams) =>
   subscriptionService.get(params);
 
-export const fetchSubscription = (id: string, params: IListQueryParams) =>
-  subscriptionService.getSingle(id, params);
+export const fetchSubscription = (id: string, params: IListQueryParams) =>subscriptionService.getSingle(id, params);
 
-export const createSubscription = (data: TSubscriptionData) =>
-  subscriptionService.post(data);
+export const createSubscription = (data: TSubscriptionData) =>subscriptionService.post(data);
 
-export const updateSubscription = (id: string) => subscriptionService.patch(id);
+export const updateSubscription = (id: string,) => subscriptionService.patch(id);
 
-export const deleteSubscription = (id: string) =>
-  subscriptionService.delete(id);
+export const deleteSubscription = (id: string) =>subscriptionService.delete(id);
