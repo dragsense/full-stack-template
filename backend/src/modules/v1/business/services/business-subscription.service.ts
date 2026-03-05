@@ -154,6 +154,9 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
   ): Promise<void> {
     const businessSubscription = await this.getSingle(businessSubscriptionId, {
       _relations: ['business.user', 'subscription'],
+    }, undefined, undefined, {
+      skipTenantScope: true,
+      skipSuperAdminOwnDataOnly: true,
     });
 
     if (!businessSubscription) {
@@ -254,7 +257,7 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
       metadata,
     });
 
-      }
+  }
 
 
   async createUserForBusiness(business: Business, repository: Repository<User>, user?: User): Promise<void> {
