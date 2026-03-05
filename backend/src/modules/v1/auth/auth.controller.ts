@@ -531,7 +531,7 @@ export class AuthController {
 
     return res
       .status(HttpStatus.OK)
-      .json({ accessToken, message: 'Logged in successfully' });
+      .json({ accessToken, refreshToken, message: 'Logged in successfully' });
   }
 
   @ApiOperation({

@@ -24,7 +24,7 @@ import {
 } from '@shared/enums/activity-log.enum';
 import { RewardsService } from '@/modules/v1/rewards/rewards.service';
 import { MembersService } from '../members/members.service';
-import { SignupUserLevel } from '@shared/enums/user.enum';
+import { EUserLevels, SignupUserLevel } from '@shared/enums/user.enum';
 import { User } from '@/common/base-user/entities/user.entity';
 import { PasswordResetEmailService } from './services/password-reset-email.service';
 import { BusinessService } from '@/modules/v1/business/business.service';
