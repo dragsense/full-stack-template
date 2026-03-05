@@ -58,27 +58,9 @@ export class TenantMiddleware implements NestMiddleware {
     private extractTenantId(req: Request): string | null {
 
 
-        // 4. Check cookies
-        const cookies: any = (req as any).cookies;
-        if (cookies && typeof cookies === 'object') {
-            const cookieTenantId = cookies.tenant_id || cookies.tenantId;
-            if (cookieTenantId) {
-                return String(cookieTenantId);
-            }
-        }
 
-        // 1. Check headers (x-tenant-id or tenant-id)
-        const headerTenantId =
-            req.headers['x-tenant-id'] ||
-            req.headers['tenant-id'] ||
-            req.headers['X-Tenant-Id'] ||
-            req.headers['Tenant-Id'];
 
-        if (headerTenantId) {
-            return Array.isArray(headerTenantId) ? headerTenantId[0] : headerTenantId;
-        }
-
-        // 2. Check query parameters
+        // 1. Check query parameters
         const queryTenantId = req.query.tenantId || req.query.tenant_id;
         if (queryTenantId) {
             if (Array.isArray(queryTenantId)) {
@@ -91,9 +73,27 @@ export class TenantMiddleware implements NestMiddleware {
                 : null;
         }
 
+        // 2. Check cookies
+        const cookies: any = (req as any).cookies;
+        if (cookies && typeof cookies === 'object') {
+            const cookieTenantId = cookies.tenant_id || cookies.tenantId;
+            if (cookieTenantId) {
+                return String(cookieTenantId);
+            }
+        }
 
+        // 3. Check headers (x-tenant-id or tenant-id)
+        const headerTenantId =
+            req.headers['x-tenant-id'] ||
+            req.headers['tenant-id'] ||
+            req.headers['X-Tenant-Id'] ||
+            req.headers['Tenant-Id'];
 
-        // 3. Check request body
+        if (headerTenantId) {
+            return Array.isArray(headerTenantId) ? headerTenantId[0] : headerTenantId;
+        }
+
+        // 4. Check request body
         if (req.body && typeof req.body === 'object') {
             const bodyTenantId = req.body.tenantId || req.body.tenant_id;
             if (bodyTenantId) {
