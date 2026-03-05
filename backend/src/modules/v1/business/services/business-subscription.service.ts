@@ -246,6 +246,7 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
       this.customLogger.error(`Failed to create subscription history: ${error.message}`, error.stack);
     });
 
+
     // Emit business activated event
     this.businessService.emitEvent('activated', business, undefined, {
       businessSubscriptionId,
@@ -308,6 +309,7 @@ export class BusinessSubscriptionService extends CrudService<BusinessSubscriptio
     }
 
     const businessSubscription = await this.getCurrentBusinessSubscription(businessId);
+
     if (!businessSubscription) {
       return {
         status: ESubscriptionStatus.INACTIVE,

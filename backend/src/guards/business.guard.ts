@@ -76,6 +76,7 @@ export class BusinessGuard implements CanActivate {
 
                 businessSubscription = await this.businessSubscriptionService.getBusinessSubscriptionStatusByBusinessId(businessId);
             }
+
             if (businessSubscription?.status === ESubscriptionStatus.ACTIVE) {
                 return true;
             } else {
